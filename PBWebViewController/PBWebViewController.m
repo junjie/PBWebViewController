@@ -204,9 +204,11 @@
     
     NSMutableArray *toolbarItems = [self.toolbarItems mutableCopy];
     if (self.webView.loading) {
-        toolbarItems[0] = self.stopLoadingButton;
+		NSUInteger reloadButtonIndex = [toolbarItems indexOfObject:self.reloadButton];
+        toolbarItems[reloadButtonIndex] = self.stopLoadingButton;
     } else {
-        toolbarItems[0] = self.reloadButton;
+		NSUInteger stopButtonIndex = [toolbarItems indexOfObject:self.stopLoadingButton];
+        toolbarItems[stopButtonIndex] = self.reloadButton;
     }
     self.toolbarItems = [toolbarItems copy];
 }
@@ -254,10 +256,25 @@
 
 #pragma mark - Web view delegate
 
+- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
+{
+	if ([self.delegate respondsToSelector:@selector(webViewController:shouldStartLoadWithRequest:navigationType:)])
+	{
+		return [self.delegate webViewController:self shouldStartLoadWithRequest:request navigationType:navigationType];
+	}
+	
+	return YES;
+}
+
 - (void)webViewDidStartLoad:(UIWebView *)webView
 {
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
     [self toggleState];
+	
+	if ([self.delegate respondsToSelector:@selector(webViewControllerDidStartLoad:)])
+	{
+		[self.delegate webViewControllerDidStartLoad:self];
+	}
 }
 
 - (void)webViewDidFinishLoad:(UIWebView *)webView
@@ -265,11 +282,21 @@
     [self finishLoad];
     self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
     self.URL = self.webView.request.URL;
+	
+	if ([self.delegate respondsToSelector:@selector(webViewControllerDidFinishLoad:)])
+	{
+		[self.delegate webViewControllerDidFinishLoad:self];
+	}
 }
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
     [self finishLoad];
+	
+	if ([self.delegate respondsToSelector:@selector(webViewController:didFailLoadWithError:)])
+	{
+		[self.delegate webViewController:self didFailLoadWithError:error];
+	}
 }
 
 #pragma mark - Popover controller delegate

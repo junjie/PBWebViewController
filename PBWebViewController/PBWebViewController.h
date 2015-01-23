@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol PBWebViewControllerDelegate;
+
 /**
  * The `PBWebViewController` class is a view controller that displays the contents of a URL
  * along tith a navigation toolbar with buttons to stop/refresh the loading of the page
@@ -46,6 +48,17 @@
 @property (assign, nonatomic) BOOL showsNavigationToolbar;
 
 /**
+ * The web view. Do not hook yourself up to the delegate. If you need
+ * the delegate call backs, hook to the controller's delegate instead
+ */
+@property (strong, nonatomic, readonly) UIWebView *webView;
+
+/**
+ * The delegate to forward webView delegate calls to
+ */
+@property (weak, nonatomic) id<PBWebViewControllerDelegate>delegate;
+
+/**
  * Loads the given `URL`.
  * This is called automatically when the when the web view appears if a `URL` exists,
  * otehrwise it can be called manually.
@@ -57,4 +70,13 @@
  */
 - (void)clear;
 
+@end
+
+
+@protocol PBWebViewControllerDelegate <UIWebViewDelegate>
+@optional
+- (BOOL)webViewController:(PBWebViewController *)webViewController shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType;
+- (void)webViewControllerDidStartLoad:(PBWebViewController *)webViewController;
+- (void)webViewControllerDidFinishLoad:(PBWebViewController *)webViewController;
+- (void)webViewController:(PBWebViewController *)webViewController didFailLoadWithError:(NSError *)error;
 @end
