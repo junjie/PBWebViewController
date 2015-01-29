@@ -46,6 +46,7 @@
 - (void)commonInit
 {
     _showsNavigationToolbar = YES;
+	_automaticallySetControllerTitleToPageTitle = YES;
 }
 
 - (void)load
@@ -64,7 +65,10 @@
 - (void)clear
 {
     [self.webView loadHTMLString:@"" baseURL:nil];
-    self.title = @"";
+	if (self.automaticallySetControllerTitleToPageTitle)
+	{
+		self.title = @"";
+	}
 }
 
 #pragma mark - View controller lifecycle
@@ -280,7 +284,12 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView
 {
     [self finishLoad];
-    self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+	
+	if (self.automaticallySetControllerTitleToPageTitle)
+	{
+		self.title = [webView stringByEvaluatingJavaScriptFromString:@"document.title"];
+	}
+	
     self.URL = self.webView.request.URL;
 	
 	if ([self.delegate respondsToSelector:@selector(webViewControllerDidFinishLoad:)])

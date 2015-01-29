@@ -59,6 +59,12 @@
 @property (weak, nonatomic) id<PBWebViewControllerDelegate>delegate;
 
 /**
+ * Default: YES. Automatically sets the title of this view controller to
+ * the title of the page
+ */
+@property (nonatomic) BOOL automaticallySetControllerTitleToPageTitle;
+
+/**
  * Loads the given `URL`.
  * This is called automatically when the when the web view appears if a `URL` exists,
  * otehrwise it can be called manually.
