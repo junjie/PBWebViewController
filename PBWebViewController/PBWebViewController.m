@@ -300,12 +300,12 @@
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
-    [self finishLoad];
-	
 	if ([self.delegate respondsToSelector:@selector(webViewController:didFailLoadWithError:)])
 	{
 		[self.delegate webViewController:self didFailLoadWithError:error];
 	}
+	
+	[self finishLoad];
 }
 
 #pragma mark - Popover controller delegate
