@@ -209,10 +209,16 @@
     NSMutableArray *toolbarItems = [self.toolbarItems mutableCopy];
     if (self.webView.loading) {
 		NSUInteger reloadButtonIndex = [toolbarItems indexOfObject:self.reloadButton];
-        toolbarItems[reloadButtonIndex] = self.stopLoadingButton;
+		if (reloadButtonIndex != NSNotFound)
+		{
+			toolbarItems[reloadButtonIndex] = self.stopLoadingButton;
+		}
     } else {
 		NSUInteger stopButtonIndex = [toolbarItems indexOfObject:self.stopLoadingButton];
-        toolbarItems[stopButtonIndex] = self.reloadButton;
+		if (stopButtonIndex != NSNotFound)
+		{
+			toolbarItems[stopButtonIndex] = self.reloadButton;
+		}
     }
     self.toolbarItems = [toolbarItems copy];
 }
